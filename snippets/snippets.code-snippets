@@ -1,0 +1,265 @@
+{
+	"field:date": {
+		"prefix": "field:date",
+		"body": "<?php if ( get_field('${1:field_name}') ) : $$date = DateTime::createFromFormat('${2:Ymd}', get_field('${1:field_name}')); ?>\r\n\t<?php echo $$date->format('${3:d-m-Y}'); ?>\r\n<?php endif; ?>\r\n",
+		"description": "ACF date field"
+	},
+	"ddfield": {
+		"prefix": "ddfield",
+		"body": "<pre>\r\n\t<?php var_dump(get_field('${1:field_name}')); die(); ?>\r\n</pre>\r\n",
+		"description": "Dump ACF field"
+	},
+	"field": {
+		"prefix": "field",
+		"body": "<?php if ( get_field('${1:field_name}') ) : ?>\r\n\t<?php the_field('${1:field_name}'); ?>\r\n<?php endif; ?>\r\n",
+		"description": "Display ACF field"
+	},
+	"field:file:id": {
+		"prefix": "field:file:id",
+		"body": "<?php\r\nif ( get_field('${1:field_name}') ) :\r\n\t$$attachment_id = get_field('${1:field_name}');\r\n\t$$url = wp_get_attachment_url( $$attachment_id );\r\n\t$$title = get_the_title( $$attachment_id );\r\n?>\r\n\t<a href=\"<?php echo $$url; ?>\" ><?php echo $$title; ?></a>\r\n<?php endif; ?>\r\n",
+		"description": "ACF file field (ID)"
+	},
+	"field:file:object": {
+		"prefix": "field:file:object",
+		"body": "<?php if ( get_field('${1:field_name}') ) : $$file = get_field('${1:field_name}'); ?>\r\n\t<a href=\"<?php echo $$file['url']; ?>\"><?php echo $$file['title']; ?></a>\r\n<?php endif; ?>\r\n",
+		"description": "ACF file field (object)"
+	},
+	"field:file": {
+		"prefix": "field:file",
+		"body": "<?php if ( get_field('${1:field_name}') ) : ?>\r\n\t<a href=\"<?php the_field('${1:field_name}'); ?>\" >${2:Download File}</a>\r\n<?php endif; ?>\r\n",
+		"description": "ACF file field (URL)"
+	},
+	"field:flex": {
+	  "prefix": "field:flex",
+	  "body": "<?php if ( have_rows( '${1:field_name}' ) ) : ?>\r\n\t<?php while ( have_rows('${1:field_name}' ) ) : the_row(); ?>\r\n\t\t<?php if ( get_row_layout() == '${3:layout_field}' ) : ?>\r\n\t\t\t<div class=\"${4:class}\">\r\n\t\t\t\t<?php the_sub_field( '${5:field_name}' ); ?>\r\n\t\t\t</div>\r\n\t\t<?php endif; ?>\r\n\t<?php endwhile; ?>\r\n<?php endif; ?>\r\n",
+	  "description": "ACF flexible content field"
+	},
+	"field:flex:nested": {
+	  "prefix": "field:flex:nested",
+	  "body": "<?php if( have_rows('${1:field_name}') ): ?>\r\n\t<?php while ( have_rows('${1:field_name}') ) : the_row(); ?>\r\n\t\t<?php if( get_row_layout() == '${2:layout_field}' ): ?>\r\n\t\t\t<?php if( have_rows('${3:layout_rows}') ): ?>\r\n\t\t\t\t<ul>\r\n\t\t\t\t\t<?php while ( have_rows('${3:layout_rows}') ) : the_row(); $$image = get_sub_field('${4:sub_field}'); ?>\r\n\t\t\t\t\t\t${5:<li><img src=\"<?php echo $$image['url']; ?>\" alt=\"<?php echo $$image['alt']; ?>\" /></li>}\r\n\t\t\t\t\t<?php endwhile; ?>\r\n\t\t\t\t</ul>\r\n\t\t\t<?php endif; ?>\r\n\t\t<?php endif; ?>\r\n\t<?php endwhile; ?>\r\n<?php endif; ?>\r\n",
+	  "description": "ACF flexible content nested field"
+	},
+	"field:form": {
+		"prefix": "field:form",
+		"body": "<?php if ( get_field('${1:field_name}') ) {\r\n\t$$form = get_field('${1:field_name}');\r\n\tgravity_form_enqueue_scripts($$form->id, true);\r\n\tgravity_form($$form->id, ${2:display_title}, ${3:display_description}, false, ${4:field_values}, ${5:enable_ajax}, 1);\r\n} ?>\r\n",
+		"description": "ACF gravity forms field"
+	},
+	"field:header": {
+		"prefix": "field:header",
+		"body": "<${2:h1}><?php the_field('${1:field_name}'); ?></${2:h1}>",
+		"description": "Display ACF header field"
+	},
+	"field:if": {
+		"prefix": "field:if",
+		"body": "<?php if ( get_field('${1:field_name}') ) : ?>\r\n\t$2\r\n<?php endif; ?>\r\n",
+		"description": "ACF true/false"
+	},
+	"field:ifelse": {
+		"prefix": "field:ifelse",
+		"body": "<?php if ( get_field('${1:field_name}') ) : ?>\r\n\t$2\r\n<?php else: ?>\r\n\t$3\r\n<?php endif; ?>\r\n",
+		"description": "ACF true/false"
+	},
+	"field:image:id": {
+		"prefix": "field:image:id",
+		"body": "<?php\r\nif ( get_field('${1:field_name}') ) {\r\n\t$$attachment_id = get_field('${1:field_name}');\r\n\t$$size = \"${2:full}\"; // (thumbnail, medium, large, full or custom size)\r\n\t echo wp_get_attachment_image( $$attachment_id, $$size );\r\n}\r\n?>\r\n",
+		"description": "ACF image field (ID)"
+	},
+  "field:image:array": {
+    "prefix": "field:image:array",
+    "body": [
+      "<?php ",
+      "\\$image = get_field('image');",
+      "if( !empty( \\$image ) ): ?>",
+      "    <img src=\"<?php echo esc_url(\\$image['url']); ?>\" alt=\"<?php echo esc_attr(\\$image['alt']); ?>\" />",
+      "<?php endif; ?>"
+    ],
+    "description": "ACF file field (array)"
+  },
+  "field:image:array:example": {
+    "prefix": "field:image:array:example",
+    "body": [
+      "<?php",
+      "\\$image = get_field('image');",
+      "if( \\$image ):",
+      "",
+      "    // Image variables.",
+      "    \\$url = \\$image['url'];",
+      "    \\$title = \\$image['title'];",
+      "    \\$alt = \\$image['alt'];",
+      "    \\$caption = \\$image['caption'];",
+      "",
+      "    // Thumbnail size attributes.",
+      "    \\$size = 'thumbnail';",
+      "    \\$thumb = \\$image['sizes'][ \\$size ];",
+      "    \\$width = \\$image['sizes'][ \\$size . '-width' ];",
+      "    \\$height = \\$image['sizes'][ \\$size . '-height' ];",
+      "",
+      "    // Begin caption wrap.",
+      "    if( \\$caption ): ?>",
+      "        <div class=\"wp-caption\">",
+      "    <?php endif; ?>",
+      "",
+      "    <a href=\"<?php echo esc_url(\\$url); ?>\" title=\"<?php echo esc_attr(\\$title); ?>\">",
+      "        <img src=\"<?php echo esc_url(\\$thumb); ?>\" alt=\"<?php echo esc_attr(\\$alt); ?>\" />",
+      "    </a>",
+      "",
+      "    <?php",
+      "    // End caption wrap.",
+      "    if( \\$caption ): ?>",
+      "        <p class=\"wp-caption-text\"><?php echo esc_html(\\$caption); ?></p>",
+      "        </div>",
+      "    <?php endif; ?>",
+      "<?php endif; ?>"
+    ],
+    "description": "ACF image field (object)"
+  },
+  "field:image": {
+    "prefix": "field:image",
+    "body": [
+      "<?php if( get_field('image') ): ?>",
+      "    <img src=\"<?php the_field('image'); ?>\" />",
+      "<?php endif; ?>"
+    ],
+    "description": "ACF image field (URL)"
+  },
+	"field:link": {
+		"prefix": "field:link",
+		"body": "<?php if ( get_field('${1:field_name}') ) : ?>\r\n\t<a href=\"<?php echo esc_url( get_field('${1:field_name}') ); ?>\">esc_html( $2 )</a>\r\n<?php endif; ?>\r\n",
+		"description": "ACF link/page"
+	},
+	"field:option": {
+		"prefix": "field:option",
+		"body": "<?php if ( get_field('${1:field_name}', 'option') ) : ?>\r\n\t<?php the_field('${1:field_name}', 'option'); ?>\r\n<?php endif; ?>\r\n",
+		"description": "Display ACF option field"
+	},
+	"field:query": {
+		"prefix": "field:query",
+		"body": "<?php\r\n\r\n$$args = array(\r\n\t'numberposts' => 10,\r\n\t'post_type' => 'post',\r\n\t'meta_key' => '${1:field_name}',\r\n\t'meta_value' => '${2:field_value}'\r\n);\r\n\r\n$$query = new WP_Query( $$args );\r\n\r\n?>\r\n\r\n<?php if( $$query->have_posts() ) : ?>\r\n\t<ul>\r\n\t<?php while ( $$query->have_posts() ) : $$query->the_post(); ?>\r\n\t\t<li>\r\n\t\t\t<a href=\"<?php the_permalink(); ?>\"><?php the_title(); ?></a>\r\n\t\t</li>\r\n\t<?php endwhile; ?>\r\n\t</ul>\r\n<?php endif; ?>\r\n\r\n<?php wp_reset_query(); ?>\r\n",
+		"description": "Query on an ACF field"
+	},
+	"field:relationship": {
+		"prefix": "field:relationship",
+		"body": "<?php $$posts = get_field('${1:field_name}'); ?>\r\n<?php if ( $$posts ): ?>\r\n\t<ul>\r\n\t\t<?php foreach ( $$posts as $$post ) : setup_postdata( $$post ); ?>\r\n\t\t\t<li>\r\n\t\t\t\t<a href=\"<?php the_permalink(); ?>\"><?php the_title(); ?></a>\r\n\t\t\t</li>\r\n\t\t<?php endforeach; wp_reset_postdata(); ?>\r\n\t</ul>\r\n<?php endif; ?>\r\n",
+		"description": "ACF relationship field"
+	},
+	"field:repeater:grid": {
+		"prefix": "field:repeater:grid",
+		"body": "<?php if ( get_field('${1:field_name}') ) : ?>\r\n\r\n\t<div class=\"${3:item}s\">\r\n\t\t<?php foreach ( array_chunk(get_field('${1:field_name}'), ${2:2}) as $$row): ?>\r\n\r\n\t\t\t<div class=\"row\">\r\n\t\t\t\t<?php foreach ($$row as $${3:item}): ?>\r\n\r\n\t\t\t\t\t<div class=\"${3:item}\">\r\n\t\t\t\t\t\t<?php echo $${3:item}['${4:field_name}']; ?>$5\r\n\t\t\t\t\t</div>\r\n\r\n\t\t\t\t<?php endforeach; ?>\r\n\t\t\t</div>\r\n\r\n\t\t<?php endforeach; ?>\r\n\t</div>\r\n\r\n<?php endif; ?>\r\n",
+		"description": "ACF repeater field grid"
+	},
+	"field:repeater": {
+		"prefix": "field:repeater",
+		"body": "<?php if ( have_rows('${1:field_name}') ) : ?>\r\n\r\n\t<?php while( have_rows('${1:field_name}') ) : the_row(); ?>\r\n\r\n\t\t<?php the_sub_field('${3:sub_field_name}'); ?>$4\r\n\r\n\t<?php endwhile; ?>\r\n\r\n<?php endif; ?>\r\n",
+		"description": "ACF repeater field"
+	},
+  "field:repeater:slider": {
+    "prefix": "field:repeater:slider",
+    "body": [
+      "<?php if( have_rows('slides') ): ?>",
+      "<div class=\"slides\">",
+      "  <?php while( have_rows('slides') ): the_row(); ",
+      "        \\$image = get_sub_field('image');",
+      "        \\$size = \"full\"; // (thumbnail, medium, large, full or custom size)",
+      "        ?>",
+      "  <div class=\"slide\">",
+      "    <?php echo wp_get_attachment_image( \\$image, \\$size ); ?>",
+      "  </div>",
+      "  <?php endwhile; ?>",
+      "</div>",
+      "<?php endif; ?>"
+    ],
+    "description": "ACF repeater field (slider)"
+  },
+  "field:repeater:foreach": {
+    "prefix": "field:repeater:foreach",
+    "body": [
+      "<?php \\$rows = get_field('${1:repeater_field_name}');",
+      "if( \\$rows ) {",
+      "    echo '<div class=\"slides\">';",
+      "    foreach( \\$rows as \\$row ) {",
+      "        \\$image = \\$row['${2:image_field}'];",
+      "        echo '<div class=\"slide\">';",
+      "            echo wp_get_attachment_image( \\$image, '${3:full}' );",
+      "            echo wp_kses_post( wpautop( \\$row['${4:caption_field}'] ) );",
+      "        echo '</div>';",
+      "    }",
+      "    echo '</div>';",
+      "} ?>"
+    ],
+    "description": "ACF repeater field with foreach loop"
+  },
+  "field:repeater:nested": {
+    "prefix": "field:repeater:nested",
+    "body": [
+      "<?php",
+      "/**",
+      " * Field Structure:",
+      " *",
+      " * - ${1:parent_repeater} (Repeater)",
+      " *   - ${2:parent_title} (Text)",
+      " *   - ${3:child_repeater} (Repeater)",
+      " *     - ${4:child_title} (Text)",
+      " */",
+      "if( have_rows('${1:parent_repeater}') ):",
+      "    while( have_rows('${1:parent_repeater}') ) : the_row();",
+      "",
+      "        // Get parent value.",
+      "        \\$parent_title = get_sub_field('${2:parent_title}');",
+      "",
+      "        // Loop over sub repeater rows.",
+      "        if( have_rows('${3:child_repeater}') ):",
+      "            while( have_rows('${3:child_repeater}') ) : the_row();",
+      "",
+      "                // Get sub value.",
+      "                \\$child_title = get_sub_field('${4:child_title}');",
+      "",
+      "            endwhile;",
+      "        endif;",
+      "    endwhile;",
+      "endif;",
+      "?>"
+    ],
+    "description": "ACF nested repeater field"
+  },
+  "field:repeater:first": {
+    "prefix": "field:repeater:first",
+    "body": [
+      "<?php",
+      "\\$rows = get_field('${1:repeater_field_name}');",
+      "if( \\$rows ) {",
+      "    \\$first_row = \\$rows[0];",
+      "    \\$first_row_title = \\$first_row['${2:title}'];",
+      "    // ${3:Do something...}",
+      "}  ?>"
+    ],
+    "description": "ACF repeater field - get first row"
+  },
+  "field:gallery": {
+    "prefix": "field:gallery",
+    "body": [
+      "<?php ",
+      "\\$images = get_field('${1:gallery}');",
+      "\\$size = '${2:full}'; // (thumbnail, medium, large, full or custom size)",
+      "if( \\$images ): ?>",
+      "    <div class=\"${3:slides}\">",
+      "        <?php foreach( \\$images as \\$image_id ): ?>",
+      "            <div class=\"${4:slide}\">",
+      "                <?php echo wp_get_attachment_image( \\$image_id, \\$size ); ?>",
+      "            </div>",
+      "        <?php endforeach; ?>",
+      "    </div>",
+      "<?php endif; ?>"
+    ],
+    "description": "ACF gallery"
+  },
+	"field:text": {
+		"prefix": "field:text",
+		"body": "<?php if ( get_field('${1:field_name}') ) : ?>\r\n\t<p><?php the_field('${1:field_name}'); ?></p>\r\n<?php endif; ?>\r\n",
+		"description": "Display ACF text field"
+	},
+	"field:sub": {
+		"prefix": "field:sub",
+		"body": "<?php if( get_sub_field('${1:field_name}') ) : ?>\r\n\t<?php the_sub_field('${1:field_name}'); ?>\r\n<?php endif; ?>\r\n",
+		"description": "Display ACF sub field"
+	}
+}

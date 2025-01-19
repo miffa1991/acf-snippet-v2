@@ -1,13 +1,5 @@
 # Snippets for Visual Studio Code : Advanced Custom Fields
 
-[![made-for-VSCode](https://img.shields.io/badge/Made%20for-VSCode-1f425f.svg)](https://code.visualstudio.com/)
-[![Installs](https://vsmarketplacebadge.apphb.com/installs/anthonydiametrix.ACF-Snippet.svg)](https://marketplace.visualstudio.com/items?itemName=anthonydiametrix.ACF-Snippet)
-[![Badge for version for Visual Studio Code extension anthonydiametrix.ACF-Snippet](https://vsmarketplacebadge.apphb.com/version/anthonydiametrix.ACF-Snippet.svg)](https://marketplace.visualstudio.com/items?itemName=anthonydiametrix.ACF-Snippet)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/hubsta/acf-snippet-vsc/graphs/commit-activity)
-[![GitHub contributors](https://img.shields.io/github/contributors/hubsta/acf-snippet-vsc.svg)](https://GitHub.com/hubsta/acf-snippet-vsc/graphs/contributors/)
-
-Same setup as [smilledge/acf-sublime-snippets](https://github.com/smilledge/acf-sublime-snippets) but for VSC.
-
 ## Snippets
 
 All tab triggers follow the following naming convention; `field:{field type}:{type/option}`. All fields also have appropriate tabstops setup, however the first will always be the field name.
@@ -16,11 +8,17 @@ All tab triggers follow the following naming convention; `field:{field type}:{ty
 
 `field` / `field:header` / `field:text` / `field:link` / `field:option` **(HTML/PHP)**
 
-Get a field by name. (Header / text / link fields will be wrapped in `<h*>` / `<p>` / `<a>` tags)
+Get a field by name.  
+- **field** – general variant (no HTML tags).  
+- **field:text** – wraps the content in `<p>`.  
+- **field:header** – wraps the field in a chosen header tag (`<h1>`, `<h2>`, etc.).  
+- **field:link** – outputs a link to the field's returned URL.  
+- **field:option** – same as `field` but uses ACF options (`'option'`).
+
 
 ```php
 <?php if ( get_field('field_name') ) : ?>
-  <?php echo get_field('field_name'); ?>
+  <?php the_field('field_name'); ?>
 <?php endif; ?>
 ```
 
@@ -49,7 +47,7 @@ Get a field by name, within repeater/flexible.
 
 ```php
 <?php if ( get_sub_field('field_name') ) : ?>
-  <?php echo get_sub_field('field_name'); ?>
+  <?php the_sub_field('field_name'); ?>
 <?php endif; ?>
 ```
 
@@ -61,7 +59,7 @@ Image field with a return value of "Image URL"
 
 ```php
 <?php if ( get_field('field_name') ) : ?>
-    <img src="<?php the_field('field_name'); ?>" alt="<?php the_field(''); ?>">
+    <img src="<?php the_field('field_name'); ?>">
 <?php endif; ?>
 ```
 
@@ -73,25 +71,58 @@ Image field with a return value of "Image ID"
 <?php
 if ( get_field('field_name') ) {
   $attachment_id = get_field('field_name');
-  $size = "full"; // (thumbnail, medium, large, full or custom size)
-  wp_get_attachment_image( $attachment_id, $size );
+  $size = 'full'; // (thumbnail, medium, large, full or custom)
+  echo wp_get_attachment_image( $attachment_id, $size );
 }
 ?>
 ```
 
-**`field:image:object` (HTML/PHP)**
+**`field:image:array` (HTML/PHP)**
 
-Image field with a return value of "Image Object"
+Image field with a return value of "Image Array"
 
 ```php
 <?php if ( get_field('field_name') ) : $image = get_field('field_name'); ?>
+  <img src="<?php echo esc_url($image['url']); ?>" alt="<?php echo esc_attr($image['alt']); ?>" />
+<?php endif; ?>
+```
 
-  <!-- Full size image -->
-  <img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>"/>
+**`field:image:array:example` (HTML/PHP)**
 
-  <!-- Thumbnail image -->
-  <img src="<?php echo $image['sizes']['thumbnail']; ?>" alt="<?php echo $image['alt']; ?>"/>
+Image field with a return value of "Image Array example"
 
+```php
+<?php
+$image = get_field('image');
+if( $image ):
+
+    // Image variables.
+    $url = $image['url'];
+    $title = $image['title'];
+    $alt = $image['alt'];
+    $caption = $image['caption'];
+
+    // Thumbnail size attributes.
+    $size = 'thumbnail';
+    $thumb = $image['sizes'][ $size ];
+    $width = $image['sizes'][ $size . '-width' ];
+    $height = $image['sizes'][ $size . '-height' ];
+
+    // Begin caption wrap.
+    if( $caption ): ?>
+        <div class="wp-caption">
+    <?php endif; ?>
+
+    <a href="<?php echo esc_url($url); ?>" title="<?php echo esc_attr($title); ?>">
+        <img src="<?php echo esc_url($thumb); ?>" alt="<?php echo esc_attr($alt); ?>" />
+    </a>
+
+    <?php
+    // End caption wrap.
+    if( $caption ): ?>
+        <p class="wp-caption-text"><?php echo esc_html($caption); ?></p>
+        </div>
+    <?php endif; ?>
 <?php endif; ?>
 ```
 
@@ -189,68 +220,6 @@ Get a relationship field and loop over all returned posts.
 <?php endif; ?>
 ```
 
-### Location Field
-
-**`field:location` (HTML/PHP)**
-
-Get the street address from a location field
-
-```php
-<?php if ( get_field('field_name') ) :
-  $location = get_field('field_name'); ?>
-  <?php echo $location['address']; ?>
-<?php endif; ?>
-```
-
-**`field:location:staticmap` (HTML/PHP)**
-
-Get a location field and convert it to a static Google Map
-
-```php
-<?php if ( get_field('field_name') ) :
-  $location = get_field('field_name');
-  $coordinates = isset( $location['coordinates'] ) ? $location['coordinates'] : $location ; ?>
-  <img src="http://maps.google.com/maps/api/staticmap?markers=<?php echo $coordinates; ?>&size=500x300&sensor=false" alt="">
-<?php endif; ?>
-```
-
-**`field:location:map` (HTML/PHP)**
-
-Get a location field and convert it to an interactive Google Map. Also adds a marker to the location. The CSS is used to prevent rendering issues with map controls caused by most responsive CSS grids.
-
-```php
-<?php if ( get_field('field_name') ) :
-  $location = get_field('field_name');
-  $coordinates = isset( $location['coordinates'] ) ? $location['coordinates'] : $location ; ?>
-
-  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-  <script>
-    google.maps.event.addDomListener(window, 'load', function() {
-      var map = new google.maps.Map(document.getElementById('map-canvas'), {
-        zoom: 16,
-        center: new google.maps.LatLng(<?php echo $coordinates; ?>),
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        scrollwheel: false
-      });
-
-      new google.maps.Marker({
-          position: new google.maps.LatLng(<?php echo $coordinates; ?>),
-          map: map
-      });
-    });
-  </script>
-
-  <style>
-  #map-canvas img {
-    max-width: inherit;
-  }
-  </style>
-
-  <div id="map-canvas" style="width:500px;height:300px;"></div>
-
-<?php endif; ?>
-```
-
 ### Gravity Form Field
 
 **`field:form` (HTML/PHP)**
@@ -309,6 +278,114 @@ Loop over a repeater filed and seperate results into rows. The second tabstop is
 <?php endif; ?>
 ```
 
+**`field:repeater:slider` (HTML/PHP)**
+
+Loop over a repeater slider.
+
+```php
+<?php if( have_rows('slides') ): ?>
+<div class="slides">
+  <?php while( have_rows('slides') ): the_row(); 
+        $image = get_sub_field('image');
+        $size = "full"; // (thumbnail, medium, large, full or custom size)
+        ?>
+  <div class="slide">
+    <?php echo wp_get_attachment_image( $image, $size ); ?>
+  </div>
+  <?php endwhile; ?>
+</div>
+<?php endif; ?>
+```
+
+
+**`field:repeater:foreach` (HTML/PHP)**
+
+ACF repeater field with foreach loop
+
+```php
+<?php $rows = get_field('repeater_field_name');
+if( $rows ) {
+    echo '<div class="slides">';
+    foreach( $rows as $row ) {
+        $image = $row['image_field'];
+        echo '<div class="slide">';
+            echo wp_get_attachment_image( $image, 'full' );
+            echo wp_kses_post( wpautop( $row['caption_field'] ) );
+        echo '</div>';
+    }
+    echo '</div>';
+} ?>
+```
+
+**`field:repeater:nested` (HTML/PHP)**
+
+ACF nested repeater field
+
+```php
+<?php
+/**
+ * Field Structure:
+ *
+ * - parent_repeater (Repeater)
+ *   - parent_title (Text)
+ *   - child_repeater (Repeater)
+ *     - child_title (Text)
+ */
+if( have_rows('parent_repeater') ):
+    while( have_rows('parent_repeater') ) : the_row();
+
+        // Get parent value.
+        $parent_title = get_sub_field('parent_title');
+
+        // Loop over sub repeater rows.
+        if( have_rows('child_repeater') ):
+            while( have_rows('child_repeater') ) : the_row();
+
+                // Get sub value.
+                $child_title = get_sub_field('child_title');
+
+            endwhile;
+        endif;
+    endwhile;
+endif;
+?>
+```
+
+**`field:repeater:first` (HTML/PHP)**
+
+ACF repeater field - get first row
+
+```php
+<?php
+$rows = get_field('repeater_field_name');
+if( $rows ) {
+    $first_row = $rows[0];
+    $first_row_title = $first_row['title'];
+    // Do something...
+}  ?>
+```
+
+### Gallery
+
+**`field:gallery` (HTML/PHP)**
+
+ACF repeater field - get first row
+
+```php
+<?php 
+$images = get_field('gallery');
+$size = 'full'; // (thumbnail, medium, large, full or custom size)
+if( $images ): ?>
+    <div class="slides">
+        <?php foreach( $images as $image_id ): ?>
+            <div class="slide">
+                <?php echo wp_get_attachment_image( $image_id, $size ); ?>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+```
+
 ### Queries
 
 **`field:query` (HTML/PHP)**
@@ -360,11 +437,12 @@ $query = new WP_Query( $args );
 Anthony_Hubble hubsta http://github.com/hubsta doc
 Michael_Mano michaelmano https://github.com/michaelmano doc tools
 Neil Ne-Ne https://github.com/Ne-Ne bugfix
+Vadym_Mishchenko miffa1991 https://github.com/miffa1991 doc
 Contributors END -->
 
-| [![c-1-image]][c-1-link] | [![c-2-image]][c-2-link] | [![c-3-image]][c-3-link] |
-| :----------------------: | :----------------------: | :----------------------: |
-|      Anthony Hubble      |       Michael Mano       |       Neil (Ne Ne)       |
+| [![c-1-image]][c-1-link] | [![c-2-image]][c-2-link] | [![c-3-image]][c-3-link] | [![c-4-image]][c-4-link] |
+| :----------------------: | :----------------------: | :----------------------: | :----------------------: |
+|      Anthony Hubble      |       Michael Mano       |       Neil (Ne Ne)       |     Vadym Mishchenko     |
 
 [c-1-image]: https://avatars.githubusercontent.com/hubsta?s=100
 [c-1-link]: http://github.com/hubsta
@@ -372,3 +450,6 @@ Contributors END -->
 [c-2-link]: http://github.com/michaelmano
 [c-3-image]: https://avatars.githubusercontent.com/Ne-Ne?s=100
 [c-3-link]: http://github.com/Ne-Ne
+[c-4-image]: https://avatars.githubusercontent.com/miffa1991?s=100
+[c-4-link]: https://github.com/miffa1991
+
