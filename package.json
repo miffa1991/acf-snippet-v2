@@ -4,7 +4,7 @@
   "displayName": "acf-snippet-v2",
   "description": "Advanced Custom Field Snippets",
   "icon": "images/acf.png",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "engines": {
     "vscode": "^1.96.0"
   },
@@ -12,16 +12,16 @@
     "Snippets"
   ],
   "keywords": [
-		"acf",
+    "acf",
     "ACF PRO",
-		"Advanced Custom Fields",
-		"WordPress"
-	],
+    "Advanced Custom Fields",
+    "WordPress"
+  ],
   "homepage": "https://github.com/miffa1991/acf-snippet-v2/blob/master/README.md",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/miffa1991/acf-snippet-v2.git"
-	},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/miffa1991/acf-snippet-v2.git"
+  },
   "contributes": {
     "snippets": [
       {
@@ -29,9 +29,9 @@
         "path": "./snippets/snippets.code-snippets"
       },
       {
-				"language": "html",
-				"path": "./snippets/snippets.code-snippets"
-			}
+        "language": "html",
+        "path": "./snippets/snippets.code-snippets"
+      }
     ]
   }
 }
