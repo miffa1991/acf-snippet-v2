@@ -124,9 +124,24 @@
   },
 	"field:link": {
 		"prefix": "field:link",
-		"body": "<?php if ( get_field('${1:field_name}') ) : ?>\r\n\t<a href=\"<?php echo esc_url( get_field('${1:field_name}') ); ?>\">esc_html( $2 )</a>\r\n<?php endif; ?>\r\n",
+		"body": "<?php if ( get_field('${1:field_name}') ) : ?>\r\n\t<a href=\"<?php echo esc_url( get_field('${1:field_name}') ); ?>\"><?php echo esc_html( 'Continue Reading' )?></a>\r\n<?php endif; ?>\r\n",
 		"description": "ACF link/page"
 	},
+  "field:link:array": {
+    "prefix": "field:link:array",
+    "body": [
+      "<?php",
+      "\\$link = get_field('link');",
+      "if( \\$link ):",
+      "    \\$link_url = \\$link['url'];",
+      "    \\$link_title = \\$link['title'];",
+      "    \\$link_target = \\$link['target'] ? \\$link['target'] : '_self';",
+      "    ?>",
+      "    <a class=\"button\" href=\"<?php echo esc_url( \\$link_url ); ?>\" target=\"<?php echo esc_attr( \\$link_target ); ?>\"><?php echo esc_html( \\$link_title ); ?></a>",
+      "<?php endif; ?>"
+    ],
+    "description": "ACF link/array"
+  },
 	"field:option": {
 		"prefix": "field:option",
 		"body": "<?php if ( get_field('${1:field_name}', 'option') ) : ?>\r\n\t<?php the_field('${1:field_name}', 'option'); ?>\r\n<?php endif; ?>\r\n",
