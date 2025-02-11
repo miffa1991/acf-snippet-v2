@@ -122,6 +122,41 @@
     ],
     "description": "ACF image field (URL)"
   },
+  "field:url": {
+    "prefix": "field:url",
+    "body": [
+      "<?php if( get_field('sales_url') ): ?>",
+      "    <a href=\"<?php echo esc_attr( get_field('sales_url') ); ?>\"><?php echo esc_attr( get_field('sales_url') ); ?></a>",
+      "<?php endif; ?>"
+    ],
+    "description": "ACF url field (URL)"
+  },
+  "field:page_link": {
+    "prefix": "field:page_link",
+    "body": [
+      "<?php if( get_field('page_link') ): ?>",
+      "    <a href=\"<?php the_field('page_link'); ?>\">Continue reading</a>",
+      "<?php endif; ?>"
+    ],
+    "description": "This example demonstrates how to display a selected page link value."
+  },
+  "field:page_link:multiple": {
+    "prefix": "field:page_link:multiple",
+    "body": [
+      "<?php ",
+      "\\$urls = get_field('urls');",
+      "if( \\$urls ): ?>",
+      "    <ul>",
+      "        <?php foreach( \\$urls as \\$url ): ?>",
+      "        <li>",
+      "            <a href=\"<?php echo esc_url( \\$url ); ?>\"><?php echo esc_html( \\$url ); ?></a>",
+      "        </li>",
+      "        <?php endforeach; ?>",
+      "    </ul>",
+      "<?php endif; ?>"
+    ],
+    "description": "This example demonstrates how to display multiple selected page link values."
+  },
 	"field:link": {
 		"prefix": "field:link",
 		"body": "<?php if ( get_field('${1:field_name}') ) : ?>\r\n\t<a href=\"<?php echo esc_url( get_field('${1:field_name}') ); ?>\"><?php echo esc_html( 'Continue Reading' )?></a>\r\n<?php endif; ?>\r\n",
