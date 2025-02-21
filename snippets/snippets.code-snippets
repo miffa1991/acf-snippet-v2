@@ -44,6 +44,11 @@
 		"body": "<?php if ( get_field('${1:field_name}') ) {\r\n\t$$form = get_field('${1:field_name}');\r\n\tgravity_form_enqueue_scripts($$form->id, true);\r\n\tgravity_form($$form->id, ${2:display_title}, ${3:display_description}, false, ${4:field_values}, ${5:enable_ajax}, 1);\r\n} ?>\r\n",
 		"description": "ACF gravity forms field"
 	},
+  "field:cf7": {
+    "prefix": "field:cf7",
+    "body": "<?php $$form_id = get_field('${1:field_name}');\r\nif ($$form_id) {\r\n\techo do_shortcode('[contact-form-7 id=\"' . esc_attr($$form_id) . '\"]');\r\n} ?>\r\n",
+    "description": "ACF Contact Form 7 field integration with escaping"
+  },
 	"field:header": {
 		"prefix": "field:header",
 		"body": "<${2:h1}><?php the_field('${1:field_name}'); ?></${2:h1}>",
@@ -68,7 +73,7 @@
     "prefix": "field:image:array",
     "body": [
       "<?php ",
-      "\\$image = get_field('image');",
+      "\\$image = get_field('${1:image}');",
       "if( !empty( \\$image ) ): ?>",
       "    <img src=\"<?php echo esc_url(\\$image['url']); ?>\" alt=\"<?php echo esc_attr(\\$image['alt']); ?>\" />",
       "<?php endif; ?>"
@@ -302,6 +307,26 @@
     ],
     "description": "ACF gallery"
   },
+  "field:gallery:captions": {
+    "prefix": "field:gallery:captions",
+    "body": [
+      "<?php ",
+      "\\$images = get_field('${1:gallery}');",
+      "if( \\$images ): ?>",
+      "    <div class=\"gallery\">",
+      "        <?php foreach( \\$images as \\$image ): ?>",
+      "            <figure>",
+      "                <img src=\"<?php echo esc_url(\\$image['sizes']['medium']); ?>\" alt=\"<?php echo esc_attr(\\$image['alt']); ?>\" />",
+      "                <?php if( \\$image['caption'] ): ?>",
+      "                    <figcaption><?php echo esc_html(\\$image['caption']); ?></figcaption>",
+      "                <?php endif; ?>",
+      "            </figure>",
+      "        <?php endforeach; ?>",
+      "    </div>",
+      "<?php endif; ?>"
+    ],
+    "description": "ACF gallery with captions"
+  },
 	"field:text": {
 		"prefix": "field:text",
 		"body": "<?php if ( get_field('${1:field_name}') ) : ?>\r\n\t<p><?php the_field('${1:field_name}'); ?></p>\r\n<?php endif; ?>\r\n",
@@ -311,5 +336,34 @@
 		"prefix": "field:sub",
 		"body": "<?php if( get_sub_field('${1:field_name}') ) : ?>\r\n\t<?php the_sub_field('${1:field_name}'); ?>\r\n<?php endif; ?>\r\n",
 		"description": "Display ACF sub field"
-	}
+	},
+  "field:map": {
+    "prefix": "field:map",
+    "body": [
+      "<?php",
+      "\\$location = get_field('${1:map}');",
+      "if( \\$location ): ?>",
+      "    <div class=\"acf-map\" data-zoom=\"${2:14}\">",
+      "        <div class=\"marker\" data-lat=\"<?php echo esc_attr(\\$location['lat']); ?>\" data-lng=\"<?php echo esc_attr(\\$location['lng']); ?>\">",
+      "            <div><?php echo esc_html(\\$location['address']); ?></div>",
+      "        </div>",
+      "    </div>",
+      "<?php endif; ?>"
+    ],
+    "description": "Render a single marker onto a map"
+  },
+  "field:taxonomy": {
+    "prefix": "field:taxonomy",
+    "body": [
+      "<?php \\$terms = get_field('${1:taxonomy_field}');",
+      "if( \\$terms ): ?>",
+      "    <ul>",
+      "    <?php foreach( \\$terms as \\$term ): ?>",
+      "        <li><a href=\"<?php echo esc_url(get_term_link( \\$term )); ?>\"><?php echo esc_html(\\$term->name); ?></a></li>",
+      "    <?php endforeach; ?>",
+      "    </ul>",
+      "<?php endif; ?>"
+    ],
+    "description": "ACF taxonomy field"
+  }
 }

@@ -1,5 +1,18 @@
 # Change Log
 
+## 1.3.0
+
+### Added
+- **`field:map`** snippet for handling ACF Google Map fields.
+  Example: Outputs a map with custom marker and zoom level settings.
+- **`field:taxonomy`** snippet for handling ACF taxonomy fields.
+  Example: Displays a list of taxonomy terms with links to their archive pages.
+- **`field:image:array`** improved with better conditional check and proper escaping.
+- **`field:gallery:captions`** snippet for handling gallery images with captions.
+  Example: Displays gallery images in a grid with optional captions using the <figure> and <figcaption> elements.
+- **`field:cf7``** snippet for integrating ACF fields with Contact Form 7.
+  Example: Retrieves form ID from ACF field and displays the form using do_shortcode() with proper escaping.
+
 ## 1.2.0
 
 ### Added
