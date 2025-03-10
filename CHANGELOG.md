@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.4.0
+
+### Changed
+- Standardized PHP syntax across all snippets to use alternative syntax with colons (`:`) instead of curly braces (`{}`).
+- Added proper escaping for security:
+  - `field:file:object`: Added `esc_url()` for file URLs and `esc_html()` for titles
+  - `field:file:id`: Added `esc_url()` for URLs and `esc_html()` for titles
+  - `field:date`: Added `esc_html()` for date output
+- Improved code formatting and indentation for better readability
+- Updated `wp_reset_query()` to `wp_reset_postdata()` in query snippets for better WordPress practices
+
 ## 1.3.0
 
 ### Added
