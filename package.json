@@ -4,7 +4,7 @@
   "displayName": "acf-snippet-v2",
   "description": "Advanced Custom Field Snippets",
   "icon": "images/acf.png",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "engines": {
     "vscode": "^1.96.0"
   },
