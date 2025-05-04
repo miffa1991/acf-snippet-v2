@@ -1,5 +1,15 @@
 # Change Log
 
+## 1.4.1
+
+### Fixed
+- Added proper escaping for URLs in `field:page_link` and `field:url`
+- Added missing alt attributes for images in `field:image` snippet
+- Improved date field handling with better validation check
+- Fixed missing closing PHP tag in `field:cf7` snippet
+- Converted string snippets with `\r\n` to array format for better readability
+- Standardized indentation and spacing across snippets
+
 ## 1.4.0
 
 ### Changed

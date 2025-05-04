@@ -3,8 +3,10 @@
     "prefix": "field:date",
     "body": [
       "<?php if ( get_field('${1:field_name}') ) : ",
-      "\t$$date = DateTime::createFromFormat('${2:Ymd}', get_field('${1:field_name}')); ?>",
-      "\t<?php echo esc_html($$date->format('${3:d-m-Y}')); ?>",
+      "\t$$date = DateTime::createFromFormat('${2:Ymd}', get_field('${1:field_name}'));",
+      "\tif ($$date instanceof DateTime) : ?>",
+      "\t\t<?php echo esc_html($$date->format('${3:d-m-Y}')); ?>",
+      "\t<?php endif; ?>",
       "<?php endif; ?>"
     ],
     "description": "ACF date field"
@@ -21,10 +23,18 @@
 	},
   "field:file:id": {
       "prefix": "field:file:id",
-      "body": "<?php if ( get_field('${1:field_name}') ) :\r\n\t$$attachment_id = get_field('${1:field_name}');\r\n\t$$url = wp_get_attachment_url( $$attachment_id );\r\n\t$$title = get_the_title( $$attachment_id );\r\n?>\r\n\t<a href=\"<?php echo $$url; ?>\" ><?php echo $$title; ?></a>\r\n<?php endif; ?>\r\n",
+      "body": [
+        "<?php if ( get_field('${1:field_name}') ) : ?>",
+        "\t<?php",
+        "\t$$attachment_id = get_field('${1:field_name}');",
+        "\t$$url = wp_get_attachment_url( $$attachment_id );",
+        "\t$$title = get_the_title( $$attachment_id );",
+        "\t?>",
+        "\t<a href=\"<?php echo esc_url($$url); ?>\"><?php echo esc_html($$title); ?></a>",
+        "<?php endif; ?>"
+      ],
       "description": "ACF file field (ID)"
   },
-
 	"field:file:object": {
     "prefix": "field:file:object",
     "body": [
@@ -34,12 +44,16 @@
       "<?php endif; ?>"
     ],
     "description": "ACF file field (object)"
-},
-	"field:file": {
-		"prefix": "field:file",
-		"body": "<?php if ( get_field('${1:field_name}') ) : ?>\r\n\t<a href=\"<?php the_field('${1:field_name}'); ?>\" >${2:Download File}</a>\r\n<?php endif; ?>\r\n",
-		"description": "ACF file field (URL)"
-	},
+  },
+  "field:file": {
+    "prefix": "field:file",
+    "body": [
+      "<?php if ( get_field('${1:field_name}') ) : ?>",
+      "\t<a href=\"<?php echo esc_url(get_field('${1:field_name}')); ?>\">${2:Download File}</a>",
+      "<?php endif; ?>"
+    ],
+    "description": "ACF file field (URL)"
+  },
 	"field:flex": {
     "prefix": "field:flex",
     "body": [
@@ -56,10 +70,24 @@
     "description": "ACF flexible content field"
   },
 	"field:flex:nested": {
-	  "prefix": "field:flex:nested",
-	  "body": "<?php if( have_rows('${1:field_name}') ): ?>\r\n\t<?php while ( have_rows('${1:field_name}') ) : the_row(); ?>\r\n\t\t<?php if( get_row_layout() == '${2:layout_field}' ): ?>\r\n\t\t\t<?php if( have_rows('${3:layout_rows}') ): ?>\r\n\t\t\t\t<ul>\r\n\t\t\t\t\t<?php while ( have_rows('${3:layout_rows}') ) : the_row(); $$image = get_sub_field('${4:sub_field}'); ?>\r\n\t\t\t\t\t\t${5:<li><img src=\"<?php echo $$image['url']; ?>\" alt=\"<?php echo $$image['alt']; ?>\" /></li>}\r\n\t\t\t\t\t<?php endwhile; ?>\r\n\t\t\t\t</ul>\r\n\t\t\t<?php endif; ?>\r\n\t\t<?php endif; ?>\r\n\t<?php endwhile; ?>\r\n<?php endif; ?>\r\n",
-	  "description": "ACF flexible content nested field"
-	},
+    "prefix": "field:flex:nested",
+    "body": [
+      "<?php if( have_rows('${1:field_name}') ): ?>",
+      "\t<?php while ( have_rows('${1:field_name}') ) : the_row(); ?>",
+      "\t\t<?php if( get_row_layout() == '${2:layout_field}' ): ?>",
+      "\t\t\t<?php if( have_rows('${3:layout_rows}') ): ?>",
+      "\t\t\t\t<ul>",
+      "\t\t\t\t\t<?php while ( have_rows('${3:layout_rows}') ) : the_row(); $$image = get_sub_field('${4:sub_field}'); ?>",
+      "\t\t\t\t\t\t${5:<li><img src=\"<?php echo esc_url($$image['url']); ?>\" alt=\"<?php echo esc_attr($$image['alt']); ?>\" /></li>}",
+      "\t\t\t\t\t<?php endwhile; ?>",
+      "\t\t\t\t</ul>",
+      "\t\t\t<?php endif; ?>",
+      "\t\t<?php endif; ?>",
+      "\t<?php endwhile; ?>",
+      "<?php endif; ?>"
+    ],
+    "description": "ACF flexible content nested field"
+  },
   "field:form": {
     "prefix": "field:form",
     "body": [
@@ -166,7 +194,7 @@
     "prefix": "field:image",
     "body": [
       "<?php if( get_field('image') ): ?>",
-      "    <img src=\"<?php the_field('image'); ?>\" />",
+      "    <img src=\"<?php echo esc_url(get_field('image')); ?>\" alt=\"<?php echo esc_attr(get_post_meta(get_field('image'), '_wp_attachment_image_alt', true)); ?>\" />",
       "<?php endif; ?>"
     ],
     "description": "ACF image field (URL)"
@@ -175,7 +203,7 @@
     "prefix": "field:url",
     "body": [
       "<?php if( get_field('sales_url') ): ?>",
-      "    <a href=\"<?php echo esc_attr( get_field('sales_url') ); ?>\"><?php echo esc_attr( get_field('sales_url') ); ?></a>",
+      "    <a href=\"<?php echo esc_url(get_field('sales_url')); ?>\"><?php echo esc_html(get_field('sales_url')); ?></a>",
       "<?php endif; ?>"
     ],
     "description": "ACF url field (URL)"
@@ -428,10 +456,14 @@
     "description": "ACF gallery with captions"
   },
 	"field:text": {
-		"prefix": "field:text",
-		"body": "<?php if ( get_field('${1:field_name}') ) : ?>\r\n\t<p><?php the_field('${1:field_name}'); ?></p>\r\n<?php endif; ?>\r\n",
-		"description": "Display ACF text field"
-	},
+    "prefix": "field:text",
+    "body": [
+      "<?php if ( get_field('${1:field_name}') ) : ?>",
+      "\t<p><?php the_field('${1:field_name}'); ?></p>",
+      "<?php endif; ?>"
+    ],
+    "description": "Display ACF text field"
+  },
 	"field:sub": {
 		"prefix": "field:sub",
 		"body": "<?php if( get_sub_field('${1:field_name}') ) : ?>\r\n\t<?php the_sub_field('${1:field_name}'); ?>\r\n<?php endif; ?>\r\n",
